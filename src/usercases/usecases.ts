@@ -2,7 +2,7 @@ import { MetodsDatabase } from "../database/repository";
 import { IActivity, ICreate, ICreateActivity, ILogin, IResponseLogin } from "../interfaces/interfaces";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
-import { z } from 'zod'
+import { z, ZodAny } from 'zod'
 
 
 
@@ -128,7 +128,7 @@ export class Usecases {
         const _userId = userIdSchema.safeParse(userId);
         
         if (!_activitie.success) {
-        throw new Error(JSON.stringify(_activitie.error.format()));
+            throw new Error(JSON.stringify(_activitie.error.format()));
         }
         
         if (!_userId.success) {
@@ -141,6 +141,30 @@ export class Usecases {
         );
           
         return activities;
+    }
+
+    async updateActivity (userId: string, activityId: string, updateDate:ICreateActivity) {
+        const updateActivitySchema = z.object({
+            userId: z.string(),
+            activityId: z.string()
+        });
+
+        const _updateActivity = updateActivitySchema.safeParse({userId, activityId});
+
+        if(!_updateActivity.success) { throw new Error(JSON.stringify(_updateActivity.error.format()));}
+
+
+        const activity = await this.repositorie.getById(_updateActivity.data.activityId, _updateActivity.data.userId);
+
+        if (!activity || activity.userId !== userId) {
+            throw new Error('user or activity not found!');
+        };
+
+
+        const update = await this.repositorie.updateActivity(updateDate, _updateActivity.data.activityId,)
+
+
+        return update;
 
     }
 }

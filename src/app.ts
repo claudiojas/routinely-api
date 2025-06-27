@@ -1,9 +1,10 @@
 import fastify, { FastifyInstance } from "fastify"
 import { fastifyCors }  from "@fastify/cors";
-import { CreteUser } from "./routers/route.create";
+import { CreteUser } from "./routers/route.signup";
 import { UserLogin } from "./routers/route.login";
 import { ActivitiesUser } from "./routers/route.activities";
 import { CreateActivities } from "./routers/route.create.activities";
+import { EditActivities } from "./routers/route.edit.activities";
 
 
 export class App {
@@ -31,6 +32,7 @@ export class App {
         this.app.register(CreteUser);
         this.app.register(UserLogin);
         this.app.register(ActivitiesUser);
-        this.app.register(CreateActivities)
+        this.app.register(CreateActivities);
+        this.app.register(EditActivities)
     }
 }

@@ -59,5 +59,30 @@ export class MetodsDatabase implements IMetodsUser {
 
       return newActivity;
     }
+
+    async getById(activityId: string, userId: string) {
+      return await prisma.activity.findFirst({
+        where: {
+          id: activityId,
+          userId,
+        },
+      });
+    };
+
+    async updateActivity (updateDate:ICreateActivity, activityId: string) {
+
+      const updated = await prisma.activity.update({
+        where: { id: activityId },
+        data: {
+          title: updateDate.title,
+          description: updateDate.description,
+          type: updateDate.type,
+          startTime: updateDate.startTime,
+          endTime: updateDate.endTime,
+        },
+      });
+
+      return updated;
+    }
       
 }   

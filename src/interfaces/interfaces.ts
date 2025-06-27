@@ -30,8 +30,8 @@ export interface IActivity {
   title: string;
   description: string | null;
   type: ActivityType;
-  startTime: Date;
-  endTime: Date;
+  startTime: string
+  endTime: string
   createdAt: Date;
   updatedAt: Date;
 }
