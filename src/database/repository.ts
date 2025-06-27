@@ -83,6 +83,13 @@ export class MetodsDatabase implements IMetodsUser {
       });
 
       return updated;
+    };
+
+
+    async deleteActivities (activityId: string) {
+      return await prisma.activity.delete({
+        where: { id: activityId },
+      });
     }
       
 }   

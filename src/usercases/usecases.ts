@@ -166,5 +166,25 @@ export class Usecases {
 
         return update;
 
+    };
+
+    async deleteActivitie (userId: string, activityId: string) {
+        const updateActivitySchema = z.object({
+            userId: z.string(),
+            activityId: z.string()
+        });
+
+        const _updateActivity = updateActivitySchema.safeParse({userId, activityId});
+        if(!_updateActivity.success) { throw new Error(JSON.stringify(_updateActivity.error.format()));}
+
+        const activity = await this.repositorie.getById(_updateActivity.data.activityId, _updateActivity.data.userId);
+
+        if (!activity || activity.userId !== userId) {
+            throw new Error('user or activity not found!');
+        };
+
+        const deleteActivitie = await this.repositorie.deleteActivities(_updateActivity.data.activityId);
+
+        return deleteActivitie;
     }
 }

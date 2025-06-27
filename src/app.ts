@@ -5,6 +5,7 @@ import { UserLogin } from "./routers/route.login";
 import { ActivitiesUser } from "./routers/route.activities";
 import { CreateActivities } from "./routers/route.create.activities";
 import { EditActivities } from "./routers/route.edit.activities";
+import { DeleteActivities } from "./routers/route.delete.activities";
 
 
 export class App {
@@ -33,6 +34,7 @@ export class App {
         this.app.register(UserLogin);
         this.app.register(ActivitiesUser);
         this.app.register(CreateActivities);
-        this.app.register(EditActivities)
+        this.app.register(EditActivities);
+        this.app.register(DeleteActivities);
     }
 }
