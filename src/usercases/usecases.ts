@@ -6,9 +6,6 @@ import { z, ZodAny } from 'zod'
 
 
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-
 export class Usecases {
 
     private repositorie: MetodsDatabase;
@@ -45,12 +42,12 @@ export class Usecases {
             password: hashedPassword
         });
 
-        if (!JWT_SECRET) {
+        if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');
         }
         const token = jwt.sign(
             { userId: responseDataBase.id, email: responseDataBase.email },
-            JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
@@ -85,12 +82,12 @@ export class Usecases {
             throw new Error('Incorrect password');
         }
 
-        if (!JWT_SECRET) {
+        if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');
         }
         const token = jwt.sign(
             { userId: user.id, email: user.email },
-            JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
           );
 

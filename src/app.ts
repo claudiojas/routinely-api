@@ -16,6 +16,9 @@ export class App {
         this.PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
     }
 
+    getServer(): FastifyInstance {
+        return this.app;
+    }
 
     listen(){
         this.app.listen({

@@ -11,7 +11,7 @@
       "resolveJsonModule": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
-      "types": ["node", "fastify"]
+      "types": ["node", "fastify", "jest"]
     },
     "include": ["src/**/*", "src/@types/**/*"]
   }
