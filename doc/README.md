@@ -1,119 +1,209 @@
 # 📚 Documentação - Routinely API
 
-Esta pasta contém a documentação completa do projeto **Routinely API**, um sistema de gerenciamento de atividades desenvolvido em Node.js com TypeScript.
+Bem-vindo à documentação completa da **Routinely API**, uma aplicação de gerenciamento de rotinas e atividades desenvolvida com tecnologias modernas e TypeScript.
 
-## 📁 Arquivos de Documentação
+## 🚀 Visão Geral
 
-### 📋 [projectContext.md](./projectContext.md)
-**Contexto completo do projeto** - Documentação abrangente que inclui:
+A **Routinely API** é uma API RESTful desenvolvida em **TypeScript** que permite aos usuários:
+- Criar e gerenciar contas de usuário
+- Fazer login com autenticação JWT
+- Criar, editar, listar e deletar atividades
+- Organizar atividades por categorias (Pessoal, Trabalho, Estudo, Saúde, Outro)
 
-- 🎯 **Propósito do projeto** e funcionalidades
-- 🏗️ **Arquitetura do sistema** e padrões utilizados
-- 🛠️ **Stack tecnológica** completa
-- 🗄️ **Modelo de dados** e relacionamentos
-- 🔐 **Sistema de autenticação** JWT
-- 📡 **Endpoints da API** e fluxos
-- 🐳 **Configuração Docker** e containerização
-- 📊 **Decisões arquiteturais** e justificativas
-- 🔮 **Roadmap futuro** e melhorias sugeridas
+## 🛠️ Stack Tecnológica
 
-**Ideal para:** Desenvolvedores novos no projeto, revisões de arquitetura, e planejamento de evolução.
+### **Backend**
+- **TypeScript** - Linguagem principal com tipagem estática
+- **Node.js** - Runtime JavaScript
+- **Fastify** - Framework web rápido e eficiente
+- **Prisma** - ORM moderno para banco de dados
+- **PostgreSQL** - Banco de dados relacional
+- **JWT** - Autenticação baseada em tokens
+- **bcrypt** - Criptografia de senhas
+- **Jest** - Framework de testes unitários
 
-### 🔧 [technicalDetails.md](./technicalDetails.md)
-**Detalhes técnicos específicos** - Documentação focada na implementação:
+### **Ferramentas de Desenvolvimento**
+- **Docker** - Containerização da aplicação
+- **GitHub Actions** - CI/CD automatizado
+- **ESLint** - Linting de código
+- **Prettier** - Formatação de código
 
-- 📋 **Implementação específica** de cada componente
-- 💻 **Código de exemplo** com explicações
-- 🔍 **Análise de performance** e pontos de atenção
-- 🛡️ **Aspectos de segurança** implementados e recomendados
-- 📊 **Métricas de código** e complexidade
-- 🔮 **Roadmap técnico** detalhado
+## 📁 Estrutura da Documentação
 
-**Ideal para:** Desenvolvedores que precisam entender a implementação específica, debugging, e otimizações.
+### **📋 Documentação Técnica**
+- [`technicalDetails.md`](./technicalDetails.md) - Detalhes técnicos da arquitetura
+- [`frontendIntegration.md`](./frontendIntegration.md) - Guia de integração frontend-backend com TypeScript
 
-## 🎯 Como Usar Esta Documentação
+### **🔧 Guias de Desenvolvimento**
+- **Configuração do Ambiente** - Como configurar o projeto localmente
+- **Executando Testes** - Como rodar a suíte de testes
+- **Deploy** - Como fazer deploy da aplicação
 
-### Para Desenvolvedores Novos
-1. **Comece pelo** `projectContext.md` para entender o projeto como um todo
-2. **Consulte** `technicalDetails.md` quando precisar entender implementações específicas
-3. **Use ambos** para planejar novas funcionalidades
+## 🏗️ Arquitetura do Sistema
 
-### Para Manutenção
-1. **Atualize** `projectContext.md` quando houver mudanças arquiteturais
-2. **Documente** novas implementações em `technicalDetails.md`
-3. **Mantenha** a documentação sincronizada com o código
+### **Padrão de Design**
+- **Repository Pattern** - Separação entre lógica de negócio e acesso a dados
+- **Use Case Pattern** - Organização da lógica de negócio
+- **Middleware Pattern** - Interceptação de requisições
+- **TypeScript Interfaces** - Contratos bem definidos entre camadas
 
-### Para Evolução do Projeto
-1. **Consulte** o roadmap em ambos os arquivos
-2. **Analise** as decisões arquiteturais documentadas
-3. **Use** as métricas e análises para planejar melhorias
+### **Estrutura de Camadas**
+```
+┌─────────────────┐
+│   Controllers   │ ← Rotas e validação de entrada
+├─────────────────┤
+│   Use Cases     │ ← Lógica de negócio
+├─────────────────┤
+│   Repository    │ ← Acesso a dados
+├─────────────────┤
+│   Database      │ ← PostgreSQL + Prisma
+└─────────────────┘
+```
 
-## 📝 Convenções da Documentação
+## 🔐 Sistema de Autenticação
 
-### Emojis Utilizados
-- 🚀 **Funcionalidades principais**
-- 🏗️ **Arquitetura e estrutura**
-- 🛠️ **Tecnologias e ferramentas**
-- 🔐 **Segurança e autenticação**
-- 📡 **APIs e endpoints**
-- 🗄️ **Banco de dados**
-- 🐳 **Docker e containerização**
-- 🔧 **Implementação técnica**
-- 📊 **Métricas e análise**
-- 🔮 **Futuro e roadmap**
+### **Fluxo de Autenticação**
+1. **Signup** - Criação de conta com validação
+2. **Login** - Autenticação com JWT
+3. **Middleware** - Proteção de rotas
+4. **Token Management** - Gerenciamento de sessão
 
-### Estrutura dos Arquivos
-- **Headers** claros e hierárquicos
-- **Código** com syntax highlighting
-- **Tabelas** para comparações
-- **Listas** para itens relacionados
-- **Blocos** para informações importantes
+### **Segurança**
+- Senhas criptografadas com bcrypt
+- Tokens JWT com expiração
+- Validação de entrada em todas as rotas
+- Headers de segurança configurados
 
-## 🔄 Manutenção da Documentação
+## 📊 Modelo de Dados
 
-### Quando Atualizar
-- ✅ **Novas funcionalidades** implementadas
-- ✅ **Mudanças arquiteturais** significativas
-- ✅ **Atualizações de dependências** importantes
-- ✅ **Novos padrões** de código
-- ✅ **Mudanças de configuração** de ambiente
+### **Entidades Principais**
+- **User** - Usuários do sistema
+- **Activity** - Atividades/rotinas dos usuários
 
-### Como Atualizar
-1. **Mantenha** a estrutura existente
-2. **Adicione** seções quando necessário
-3. **Atualize** exemplos de código
-4. **Revise** informações desatualizadas
-5. **Teste** links e referências
+### **Relacionamentos**
+- Um usuário pode ter múltiplas atividades
+- Atividades pertencem a um usuário específico
 
-## 📚 Recursos Adicionais
+## 🧪 Testes
 
-### Documentação Externa
-- [Fastify Documentation](https://www.fastify.io/docs/)
-- [Prisma Documentation](https://www.prisma.io/docs/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [JWT.io](https://jwt.io/) - Para entender JWT
+### **Cobertura de Testes**
+- **Testes Unitários** - Lógica de negócio isolada
+- **Testes de Integração** - Fluxos completos
+- **Mocks** - Banco de dados e dependências externas
 
-### Ferramentas Recomendadas
-- **Postman/Insomnia** - Para testar APIs
-- **pgAdmin/DBeaver** - Para gerenciar PostgreSQL
-- **Docker Desktop** - Para containerização
-- **VS Code** - Para desenvolvimento
+### **Ferramentas de Teste**
+- **Jest** - Framework principal
+- **Supertest** - Testes de API
+- **Prisma Mock** - Simulação do banco de dados
+
+## 🚀 CI/CD
+
+### **GitHub Actions**
+- **Testes Automatizados** - Executados em cada push/PR
+- **Validação de Código** - Linting e formatação
+- **Build Verification** - Compilação TypeScript
+
+### **Workflow**
+```yaml
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - Setup Node.js
+      - Install dependencies
+      - Run tests
+      - Validate TypeScript
+```
+
+## 📱 Integração Frontend
+
+### **APIs Disponíveis**
+- **POST /user** - Criação de usuário
+- **POST /userLogin** - Login de usuário
+- **GET /activities** - Listar atividades
+- **POST /activities** - Criar atividade
+- **PUT /activities/:id** - Editar atividade
+- **DELETE /activities/:id** - Deletar atividade
+
+### **Autenticação**
+- Tokens JWT no header `Authorization: Bearer <token>`
+- Rotas protegidas com middleware de autenticação
+- Refresh automático de tokens
+
+## 🔧 Configuração do Ambiente
+
+### **Pré-requisitos**
+- Node.js 18+
+- PostgreSQL 12+
+- Docker (opcional)
+
+### **Variáveis de Ambiente**
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/routinely"
+JWT_SECRET="your-secret-key"
+PORT=3000
+```
+
+### **Comandos de Desenvolvimento**
+```bash
+# Instalar dependências
+npm install
+
+# Executar em desenvolvimento
+npm run dev
+
+# Executar testes
+npm test
+
+# Build para produção
+npm run build
+
+# Executar com Docker
+docker-compose up
+```
+
+## 📈 Roadmap
+
+### **Funcionalidades Futuras**
+- [ ] Sistema de notificações
+- [ ] Relatórios e analytics
+- [ ] API para mobile apps
+- [ ] Integração com calendários
+- [ ] Sistema de tags para atividades
+- [ ] Backup automático de dados
+
+### **Melhorias Técnicas**
+- [ ] Cache com Redis
+- [ ] Rate limiting
+- [ ] Documentação OpenAPI/Swagger
+- [ ] Logs estruturados
+- [ ] Métricas de performance
 
 ## 🤝 Contribuição
 
-### Para Contribuir com a Documentação
-1. **Mantenha** o padrão estabelecido
-2. **Use** emojis para organização visual
-3. **Inclua** exemplos práticos
-4. **Teste** os comandos documentados
-5. **Revise** a gramática e clareza
+### **Como Contribuir**
+1. Fork do repositório
+2. Criar branch para feature
+3. Implementar com TypeScript
+4. Adicionar testes
+5. Fazer pull request
 
-### Para Sugestões
-- Abra uma **issue** no repositório
-- Descreva a **melhoria** sugerida
-- Inclua **exemplos** quando possível
-- Mencione **impacto** na manutenibilidade
+### **Padrões de Código**
+- **TypeScript** - Tipagem estática obrigatória
+- **ESLint** - Regras de linting
+- **Prettier** - Formatação automática
+- **Conventional Commits** - Padrão de commits
+
+## 📞 Suporte
+
+### **Canais de Ajuda**
+- **Issues** - Reportar bugs ou solicitar features
+- **Documentação** - Guias detalhados
+- **Exemplos** - Código de exemplo para integração
 
 ---
 
-**Esta documentação é um recurso vivo que deve evoluir junto com o projeto. Mantenha-a atualizada e útil para toda a equipe! 🚀** 
+**Routinely API** - Organize suas rotinas de forma inteligente! 🎯
+
+*Desenvolvido com TypeScript, Fastify e PostgreSQL* 
