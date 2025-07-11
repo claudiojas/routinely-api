@@ -101,13 +101,15 @@ Este documento contém os detalhes técnicos específicos da implementação da 
 ### **Schema Prisma**
 ```prisma
 model User {
-  id        String     @id @default(cuid())
-  name      String     @db.VarChar(20)
-  email     String     @unique
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  activities Activity[]
+  id          String     @id @default(cuid())
+  name        String     @db.VarChar(20)
+  email       String     @unique
+  password    String
+  avatar      String?
+  preferences Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  activities  Activity[]
 }
 
 model Activity {
@@ -138,6 +140,14 @@ interface IUser {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
+  preferences?: {
+    theme: 'light' | 'dark' | 'auto';
+    language: 'pt-BR' | 'en-US' | 'es';
+    notifications: boolean;
+    timezone?: string;
+    dateFormat?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -163,6 +173,32 @@ interface ICreateUser {
 interface ILoginUser {
   email: string;
   password: string;
+}
+
+interface IUpdateUserProfile {
+  name?: string;
+  avatar?: string;
+  preferences?: {
+    theme?: 'light' | 'dark' | 'auto';
+    language?: 'pt-BR' | 'en-US' | 'es';
+    notifications?: boolean;
+    timezone?: string;
+    dateFormat?: string;
+  };
+}
+
+interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface IUserStats {
+  totalActivities: number;
+  completedActivities: number;
+  pendingActivities: number;
+  streakDays: number;
+  totalHours: number;
+  favoriteActivityType: string;
 }
 ```
 
@@ -274,6 +310,34 @@ interface CreateUserRequest {
 interface LoginRequest {
   email: string;
   password: string;
+}
+```
+
+### **Perfil do Usuário (Protegidos)**
+```typescript
+// GET /user/profile - Buscar perfil do usuário
+// Authorization: Bearer <token>
+
+// PUT /user/profile - Atualizar perfil do usuário
+interface UpdateProfileRequest {
+  name?: string;       // max 20 chars
+  avatar?: string;     // URL do avatar
+  preferences?: {      // Preferências do usuário
+    theme?: 'light' | 'dark' | 'auto';
+    language?: 'pt-BR' | 'en-US' | 'es';
+    notifications?: boolean;
+    timezone?: string;
+    dateFormat?: string;
+  };
+}
+
+// GET /user/stats - Estatísticas do usuário
+// Authorization: Bearer <token>
+
+// PUT /user/password - Alterar senha
+interface ChangePasswordRequest {
+  currentPassword: string; // Senha atual
+  newPassword: string;     // Nova senha (min 4 chars)
 }
 ```
 

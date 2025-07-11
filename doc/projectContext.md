@@ -9,6 +9,9 @@ A **Routinely API** é uma API RESTful desenvolvida em Node.js com TypeScript, f
 Esta API serve como backend para um sistema de gerenciamento de atividades pessoais, permitindo que usuários:
 - Criem e gerenciem contas
 - Façam login com autenticação segura
+- Gerenciem perfil de usuário (avatar, preferências)
+- Consultem estatísticas pessoais
+- Alterem senha de forma segura
 - Criem, visualizem, editem e deletem atividades
 - Categorizem atividades por tipo (Pessoal, Trabalho, Estudo, Saúde, Outro)
 - Organizem atividades com horários de início e fim
@@ -94,13 +97,15 @@ routinely-api/
 #### Tabela: User
 ```sql
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  activities Activity[]
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  avatar      String?
+  preferences Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  activities  Activity[]
 }
 ```
 
@@ -160,6 +165,12 @@ enum ActivityType {
 - `POST /user` - Criar conta de usuário
 - `POST /userLogin` - Fazer login
 
+### Perfil do Usuário (Protegidos)
+- `GET /user/profile` - Buscar perfil do usuário
+- `PUT /user/profile` - Atualizar perfil do usuário
+- `GET /user/stats` - Consultar estatísticas do usuário
+- `PUT /user/password` - Alterar senha do usuário
+
 ### Atividades (Protegidas)
 - `GET /activities` - Listar atividades do usuário
 - `POST /activities` - Criar nova atividade
@@ -199,6 +210,13 @@ enum ActivityType {
 3. Execução da lógica de negócio
 4. Operação no banco via repository
 5. Retorno dos dados
+
+### Operações de Perfil
+1. Autenticação via middleware
+2. Validação de entrada (Zod)
+3. Execução da lógica de negócio (estatísticas, atualizações)
+4. Operação no banco via repository
+5. Retorno dos dados atualizados
 
 ## 🎨 Padrões de Design
 

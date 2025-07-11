@@ -1,30 +1,26 @@
 import { FastifyInstance } from "fastify"
-import { Usecases } from "../usercases/usecases";
-import { authenticate } from "../middlewares/middleware";
+import { Usecases } from "../usecases/usecases";
 import { ICreateActivity } from "../interfaces/interfaces";
+import { authenticate } from "../middlewares/middleware";
 
-type EditActivityRoute = {
-    Params: { id: string };
-    Body: ICreateActivity;
-};
 
-export async function EditActivities (app: FastifyInstance) {
+export async function EditActivities(app: FastifyInstance) {
 
-    app.put<EditActivityRoute>("/activities/:id", { preHandler: authenticate }, async (request, reply) => {
+    app.put("/activities/:id", { preHandler: authenticate }, async (request, reply) => {
 
+        const data: ICreateActivity = request.body as ICreateActivity;
         const userId = request.user.id;
-        const activityId = request.params.id;
-        const updateDate = request.body;
+        const activityId = (request.params as any).id;
 
         try {
             const usecase = new Usecases();
-            const resultUseCase = await usecase.updateActivity(userId, activityId, updateDate);
+            const resultUseCase = await usecase.updateActivity(userId, activityId, data);
 
-            return reply.status(201).send({ data: resultUseCase });
+            return reply.status(200).send({ data: resultUseCase });
 
         } catch (error) {
-            console.error('Error during event create:', error);
-            return reply.status(500).send({ error: "Error during creation!" });
+            console.error('Error during event update activity:', error);
+            return reply.status(500).send({ error: "Error during update activity!" });
         }
     })
-};
+}

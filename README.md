@@ -1,4 +1,4 @@
-# 🚀 Routinely API
+# 🚀 Routinely API v1.1.0
 
 Uma API RESTful moderna desenvolvida em **TypeScript** para gerenciamento de rotinas e atividades diárias.
 
@@ -7,6 +7,9 @@ Uma API RESTful moderna desenvolvida em **TypeScript** para gerenciamento de rot
 A **Routinely API** é uma aplicação backend que permite aos usuários:
 - ✅ Criar e gerenciar contas de usuário
 - ✅ Fazer login com autenticação JWT segura
+- ✅ Gerenciar perfil de usuário (avatar, preferências)
+- ✅ Consultar estatísticas pessoais
+- ✅ Alterar senha de forma segura
 - ✅ Criar, editar, listar e deletar atividades
 - ✅ Organizar atividades por categorias (Pessoal, Trabalho, Estudo, Saúde, Outro)
 
@@ -107,6 +110,46 @@ Content-Type: application/json
 }
 ```
 
+### **Perfil do Usuário (Protegidos)**
+```http
+GET /user/profile
+Authorization: Bearer <token>
+```
+
+```http
+PUT /user/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Novo Nome",
+  "avatar": "https://example.com/avatar.jpg",
+  "preferences": {
+    "theme": "dark",
+    "language": "pt-BR",
+    "notifications": true
+  }
+}
+```
+
+### **Estatísticas do Usuário**
+```http
+GET /user/stats
+Authorization: Bearer <token>
+```
+
+### **Gerenciamento de Senha**
+```http
+PUT /user/password
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "currentPassword": "senha_atual",
+  "newPassword": "nova_senha"
+}
+```
+
 ### **Atividades (Protegidas)**
 ```http
 GET /activities
@@ -169,8 +212,18 @@ docker-compose up   # Executa com Docker Compose
 ## 📊 Modelo de Dados
 
 ### **Entidades**
-- **User** - Usuários do sistema
+- **User** - Usuários do sistema com perfil completo
 - **Activity** - Atividades/rotinas dos usuários
+
+### **Campos do Usuário**
+- `id` - Identificador único
+- `name` - Nome do usuário
+- `email` - Email único
+- `password` - Senha criptografada
+- `avatar` - URL do avatar (opcional)
+- `preferences` - Preferências do usuário (opcional)
+- `createdAt` - Data de criação
+- `updatedAt` - Data de atualização
 
 ### **Relacionamentos**
 - Um usuário pode ter múltiplas atividades
@@ -230,6 +283,7 @@ services:
 - [`doc/README.md`](./doc/README.md) - Visão geral da documentação
 - [`doc/technicalDetails.md`](./doc/technicalDetails.md) - Detalhes técnicos da implementação
 - [`doc/frontendIntegration.md`](./doc/frontendIntegration.md) - Guia de integração frontend-backend com TypeScript
+- [`doc/userDataAPI.md`](./doc/userDataAPI.md) - Documentação completa dos dados do usuário
 
 ## 🤝 Contribuição
 
@@ -261,11 +315,13 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ### **Funcionalidades Futuras**
 - [ ] Sistema de notificações
-- [ ] Relatórios e analytics
+- [ ] Relatórios e analytics avançados
 - [ ] API para mobile apps
 - [ ] Integração com calendários
 - [ ] Sistema de tags para atividades
 - [ ] Backup automático de dados
+- [ ] Autenticação social (Google, Facebook)
+- [ ] Recuperação de senha por email
 
 ### **Melhorias Técnicas**
 - [ ] Cache com Redis
@@ -273,6 +329,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 - [ ] Documentação OpenAPI/Swagger
 - [ ] Logs estruturados
 - [ ] Métricas de performance
+- [ ] Upload de arquivos para avatares
+- [ ] Validação de email
 
 ---
 

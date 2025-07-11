@@ -6,6 +6,7 @@ import { ActivitiesUser } from "./routers/route.activities";
 import { CreateActivities } from "./routers/route.create.activities";
 import { EditActivities } from "./routers/route.edit.activities";
 import { DeleteActivities } from "./routers/route.delete.activities";
+import { UserProfile } from "./routers/route.user.profile";
 
 
 export class App {
@@ -30,7 +31,7 @@ export class App {
     register(){
         this.app.register(fastifyCors, {
             origin: "*",
-            methods: ['POST', 'DELETE', 'GET']
+            methods: ['POST', 'DELETE', 'GET', 'PUT']
         });
 
         this.app.register(CreteUser);
@@ -39,5 +40,7 @@ export class App {
         this.app.register(CreateActivities);
         this.app.register(EditActivities);
         this.app.register(DeleteActivities);
+        // ✅ NOVO: Registrar endpoints de usuário
+        this.app.register(UserProfile);
     }
 }

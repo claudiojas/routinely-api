@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { Usecases } from "../usercases/usecases";
+import { Usecases } from "../usecases/usecases";
 import { ILogin } from "../interfaces/interfaces";
 
 
@@ -13,6 +13,7 @@ export async function UserLogin(app: FastifyInstance) {
             const usecase = new Usecases();
             const resultUseCase = await usecase.Login(data);
 
+            // ✅ MELHORIA: Retornar dados do usuário no login
             return reply.status(201).send({ data: resultUseCase });
 
         } catch (error) {
@@ -20,4 +21,4 @@ export async function UserLogin(app: FastifyInstance) {
             return reply.status(500).send({ error: "Error during Login!" });
         }
     })
-};
+}

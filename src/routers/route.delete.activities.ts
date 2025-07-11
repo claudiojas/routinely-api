@@ -1,28 +1,24 @@
 import { FastifyInstance } from "fastify"
-import { Usecases } from "../usercases/usecases";
+import { Usecases } from "../usecases/usecases";
 import { authenticate } from "../middlewares/middleware";
-import { ICreateActivity } from "../interfaces/interfaces";
 
-type EditActivityRoute = {
-    Params: { id: string };
-};
 
-export async function DeleteActivities (app: FastifyInstance) {
+export async function DeleteActivities(app: FastifyInstance) {
 
-    app.delete<EditActivityRoute>("/activities/:id", { preHandler: authenticate }, async (request, reply) => {
+    app.delete("/activities/:id", { preHandler: authenticate }, async (request, reply) => {
 
         const userId = request.user.id;
-        const activityId = request.params.id;
+        const activityId = (request.params as any).id;
 
         try {
             const usecase = new Usecases();
-            const resultUseCase = await usecase.deleteActivitie(userId, activityId);
+            await usecase.deleteActivitie(userId, activityId);
 
-            return reply.status(201).send({ data: resultUseCase });
+            return reply.status(200).send({ data: { message: "Activity deleted successfully" } });
 
         } catch (error) {
-            console.error('Error during event create:', error);
-            return reply.status(500).send({ error: "Error during creation!" });
+            console.error('Error during event delete activity:', error);
+            return reply.status(500).send({ error: "Error during delete activity!" });
         }
     })
-};
+}

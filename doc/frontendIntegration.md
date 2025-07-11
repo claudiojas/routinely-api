@@ -18,6 +18,14 @@ interface IUser {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
+  preferences?: {
+    theme: 'light' | 'dark' | 'auto';
+    language: 'pt-BR' | 'en-US' | 'es';
+    notifications: boolean;
+    timezone?: string;
+    dateFormat?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -69,6 +77,33 @@ interface ICreateActivity {
   type: 'PESSOAL' | 'TRABALHO' | 'ESTUDO' | 'SAUDE' | 'OUTRO';
   startTime: string;
   endTime: string;
+}
+
+// Interfaces para perfil do usuário
+interface IUpdateProfile {
+  name?: string;
+  avatar?: string;
+  preferences?: {
+    theme?: 'light' | 'dark' | 'auto';
+    language?: 'pt-BR' | 'en-US' | 'es';
+    notifications?: boolean;
+    timezone?: string;
+    dateFormat?: string;
+  };
+}
+
+interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface IUserStats {
+  totalActivities: number;
+  completedActivities: number;
+  pendingActivities: number;
+  streakDays: number;
+  totalHours: number;
+  favoriteActivityType: string;
 }
 
 // Tipos para requisições
@@ -462,6 +497,195 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
 };
 
 export default Signup;
+```
+
+## 👤 Gerenciamento de Perfil do Usuário
+
+### Buscar Perfil do Usuário
+```typescript
+const getUserProfile = async (): Promise<IUser> => {
+  const result = await apiRequest<IApiResponse<IUser>>('http://localhost:3000/user/profile');
+  
+  if (result.success && result.data) {
+    return result.data.data;
+  } else {
+    throw new Error(result.error || 'Erro ao buscar perfil');
+  }
+};
+```
+
+### Atualizar Perfil do Usuário
+```typescript
+const updateUserProfile = async (profileData: IUpdateProfile): Promise<IUser> => {
+  const result = await apiRequest<IApiResponse<IUser>>('http://localhost:3000/user/profile', {
+    method: 'PUT',
+    body: JSON.stringify(profileData)
+  });
+  
+  if (result.success && result.data) {
+    return result.data.data;
+  } else {
+    throw new Error(result.error || 'Erro ao atualizar perfil');
+  }
+};
+```
+
+### Buscar Estatísticas do Usuário
+```typescript
+const getUserStats = async (): Promise<IUserStats> => {
+  const result = await apiRequest<IApiResponse<IUserStats>>('http://localhost:3000/user/stats');
+  
+  if (result.success && result.data) {
+    return result.data.data;
+  } else {
+    throw new Error(result.error || 'Erro ao buscar estatísticas');
+  }
+};
+```
+
+### Alterar Senha
+```typescript
+const changePassword = async (passwordData: IChangePassword): Promise<void> => {
+  const result = await apiRequest<IApiResponse<{ message: string }>>('http://localhost:3000/user/password', {
+    method: 'PUT',
+    body: JSON.stringify(passwordData)
+  });
+  
+  if (!result.success) {
+    throw new Error(result.error || 'Erro ao alterar senha');
+  }
+};
+```
+
+### Componente de Perfil do Usuário
+```tsx
+import React, { useState, useEffect } from 'react';
+
+interface UserProfileProps {
+  onProfileUpdate?: (user: IUser) => void;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ onProfileUpdate }) => {
+  const [profile, setProfile] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async (): Promise<void> => {
+    try {
+      const userProfile = await getUserProfile();
+      setProfile(userProfile);
+    } catch (error) {
+      setError('Erro ao carregar perfil');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateProfile = async (profileData: IUpdateProfile): Promise<void> => {
+    try {
+      const updatedProfile = await updateUserProfile(profileData);
+      setProfile(updatedProfile);
+      onProfileUpdate?.(updatedProfile);
+    } catch (error) {
+      setError('Erro ao atualizar perfil');
+    }
+  };
+
+  if (loading) return <div>Carregando...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!profile) return <div>Perfil não encontrado</div>;
+
+  return (
+    <div className="user-profile">
+      <h2>Perfil do Usuário</h2>
+      <div className="profile-info">
+        <p><strong>Nome:</strong> {profile.name}</p>
+        <p><strong>Email:</strong> {profile.email}</p>
+        {profile.avatar && (
+          <img src={profile.avatar} alt="Avatar" className="avatar" />
+        )}
+        {profile.preferences && (
+          <div className="preferences">
+            <h3>Preferências</h3>
+            <p>Tema: {profile.preferences.theme}</p>
+            <p>Idioma: {profile.preferences.language}</p>
+            <p>Notificações: {profile.preferences.notifications ? 'Ativadas' : 'Desativadas'}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UserProfile;
+```
+
+### Componente de Estatísticas
+```tsx
+import React, { useState, useEffect } from 'react';
+
+const UserStats: React.FC = () => {
+  const [stats, setStats] = useState<IUserStats | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async (): Promise<void> => {
+    try {
+      const userStats = await getUserStats();
+      setStats(userStats);
+    } catch (error) {
+      setError('Erro ao carregar estatísticas');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div>Carregando estatísticas...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!stats) return <div>Estatísticas não disponíveis</div>;
+
+  return (
+    <div className="user-stats">
+      <h2>Suas Estatísticas</h2>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <h3>Total de Atividades</h3>
+          <p className="stat-number">{stats.totalActivities}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Atividades Concluídas</h3>
+          <p className="stat-number">{stats.completedActivities}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Atividades Pendentes</h3>
+          <p className="stat-number">{stats.pendingActivities}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Sequência de Dias</h3>
+          <p className="stat-number">{stats.streakDays}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Total de Horas</h3>
+          <p className="stat-number">{stats.totalHours}h</p>
+        </div>
+        <div className="stat-card">
+          <h3>Tipo Favorito</h3>
+          <p className="stat-text">{stats.favoriteActivityType}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserStats;
 ```
 
 ## 🔄 Gerenciamento de Estado com TypeScript

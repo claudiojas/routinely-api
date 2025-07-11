@@ -15,13 +15,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  activities Activity[]
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  avatar      String?  // URL da imagem de perfil
+  preferences Json?    // Preferências do usuário (JSON)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  activities  Activity[]
 }
 
 model Activity {
@@ -35,7 +37,7 @@ model Activity {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum ActivityType {
