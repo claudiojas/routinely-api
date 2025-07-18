@@ -18,12 +18,16 @@ model User {
   id          String   @id @default(uuid())
   name        String
   email       String   @unique
-  password    String
+  password    String? // Agora opcional para login social
   avatar      String?  // URL da imagem de perfil
   preferences Json?    // Preferências do usuário (JSON)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   activities  Activity[]
+  // Campos para login social Google
+  googleId            String?   @unique
+  googleAccessToken   String?
+  googleRefreshToken  String?
 }
 
 model Activity {

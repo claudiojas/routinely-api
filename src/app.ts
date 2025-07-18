@@ -7,6 +7,7 @@ import { CreateActivities } from "./routers/route.create.activities";
 import { EditActivities } from "./routers/route.edit.activities";
 import { DeleteActivities } from "./routers/route.delete.activities";
 import { UserProfile } from "./routers/route.user.profile";
+import googleAuthRoutes from "./routers/route.auth.google";
 
 
 export class App {
@@ -42,5 +43,6 @@ export class App {
         this.app.register(DeleteActivities);
         // ✅ NOVO: Registrar endpoints de usuário
         this.app.register(UserProfile);
+        this.app.register(googleAuthRoutes);
     }
 }
