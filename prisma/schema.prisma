@@ -38,6 +38,7 @@ model Activity {
   type        ActivityType
   startTime   String
   endTime     String
+  date        String // formato YYYY-MM-DD
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

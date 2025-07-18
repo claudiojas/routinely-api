@@ -8,10 +8,11 @@ export async function ActivitiesUser (app: FastifyInstance) {
     app.get("/activities", { preHandler: authenticate }, async (request, reply) => {
 
         const userId = request.user.id;
+        const { date, startDate, endDate } = request.query as any;
 
         try {
             const usecase = new Usecases();
-            const resultUseCase = await usecase.Activities(userId);
+            const resultUseCase = await usecase.Activities(userId, date, startDate, endDate);
 
             return reply.status(201).send({ data: resultUseCase });
 

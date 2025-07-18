@@ -152,9 +152,12 @@ export class MetodsDatabase implements IMetodsUser {
         };
     }
 
-    async getAllByUserId(userId: string): Promise<IActivity[]> {
+    async getAllByUserId(userId: string, date?: string, startDate?: string, endDate?: string): Promise<IActivity[]> {
+        const where: any = { userId };
+        if (date) where.date = date;
+        if (startDate && endDate) where.date = { gte: startDate, lte: endDate };
         const activities = await prisma.activity.findMany({
-            where: { userId },
+            where,
             orderBy: { startTime: 'asc' },
         });
         return activities;
@@ -169,6 +172,7 @@ export class MetodsDatabase implements IMetodsUser {
                 type: data.type,
                 startTime: data.startTime,
                 endTime: data.endTime,
+                date: data.date,
             },
         });
         return activity;
@@ -201,6 +205,7 @@ export class MetodsDatabase implements IMetodsUser {
                 type: data.type,
                 startTime: data.startTime,
                 endTime: data.endTime,
+                date: data.date,
             },
         });
 

@@ -3,7 +3,7 @@ import { IActivity, ICreate, ILogin, IResponseCreate, IResponseLogin, IUser, IUp
 export interface IMetodsUser {
     create(data:ICreate):Promise<IResponseCreate>
     getUserByEmail(email: string): Promise<IResponseCreate | null> 
-    getAllByUserId(userId: string): Promise<IActivity[]>
+    getAllByUserId(userId: string, date?: string, startDate?: string, endDate?: string): Promise<IActivity[]>;
     // ✅ NOVOS: Métodos para gerenciamento de usuário
     getUserById(userId: string): Promise<IUser | null>
     updateUser(userId: string, data: IUpdateProfile): Promise<IUser>

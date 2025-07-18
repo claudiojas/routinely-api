@@ -196,7 +196,7 @@ export class Usecases {
         return stats;
     }
 
-    async Activities (userId: string): Promise<IActivity[]> {
+    async Activities (userId: string, date?: string, startDate?: string, endDate?: string): Promise<IActivity[]> {
         const activitiesUser = z.object({userId: z.string({message: 'UserId not found!'})});
         const parsed = activitiesUser.safeParse({ userId });
 
@@ -204,7 +204,7 @@ export class Usecases {
             throw new Error(JSON.stringify(parsed.error.format()));
         }
 
-        const activities = await this.repositorie.getAllByUserId(parsed.data.userId);
+        const activities = await this.repositorie.getAllByUserId(parsed.data.userId, date, startDate, endDate);
 
         return activities;
     }
@@ -216,7 +216,8 @@ export class Usecases {
             description: z.string().optional(),
             type: z.enum(['PESSOAL', 'TRABALHO', 'ESTUDO', 'SAUDE', 'OUTRO']),
             startTime: z.string(),
-            endTime: z.string()
+            endTime: z.string(),
+            date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
         });
         
         const userIdSchema = z.string({ message: 'UserId not found!' });
@@ -255,6 +256,11 @@ export class Usecases {
         if (!activity || activity.userId !== userId) {
             throw new Error('user or activity not found!');
         };
+
+        // Validação do campo date
+        if (!updateDate.date || !/^\d{4}-\d{2}-\d{2}$/.test(updateDate.date)) {
+            throw new Error('Campo date inválido ou ausente. Formato esperado: YYYY-MM-DD');
+        }
 
         const update = await this.repositorie.updateActivity(activityId, userId, updateDate);
 

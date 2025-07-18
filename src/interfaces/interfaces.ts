@@ -92,8 +92,9 @@ export interface IActivity {
   title: string;
   description: string | null;
   type: ActivityType;
-  startTime: string
-  endTime: string
+  startTime: string;
+  endTime: string;
+  date: string; // formato YYYY-MM-DD
   createdAt: Date;
   updatedAt: Date;
 }
@@ -104,4 +105,5 @@ export interface ICreateActivity {
   type: 'PESSOAL' | 'TRABALHO' | 'ESTUDO' | 'SAUDE' | 'OUTRO';
   startTime: string;
   endTime: string;
+  date: string; // formato YYYY-MM-DD
 }

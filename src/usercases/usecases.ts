@@ -96,7 +96,7 @@ export class Usecases {
 
     };
 
-    async Activities (userId: string): Promise<IActivity[]> {
+    async Activities (userId: string, date?: string, startDate?: string, endDate?: string): Promise<IActivity[]> {
         const activitiesUser = z.object({userId: z.string({message: 'UserId not found!'})});
         const parsed = activitiesUser.safeParse({ userId });
 
@@ -104,7 +104,7 @@ export class Usecases {
             throw new Error(JSON.stringify(parsed.error.format()));
         }
 
-        const activities = await this.repositorie.getAllByUserId(parsed.data.userId);
+        const activities = await this.repositorie.getAllByUserId(parsed.data.userId, date, startDate, endDate);
 
         return activities;
     };
