@@ -8,6 +8,7 @@ import { EditActivities } from "./routers/route.edit.activities";
 import { DeleteActivities } from "./routers/route.delete.activities";
 import { UserProfile } from "./routers/route.user.profile";
 import googleAuthRoutes from "./routers/route.auth.google";
+import weekRoutes from "./routers/route.weeks";
 
 
 export class App {
@@ -44,5 +45,7 @@ export class App {
         // ✅ NOVO: Registrar endpoints de usuário
         this.app.register(UserProfile);
         this.app.register(googleAuthRoutes);
+        // ✅ NOVO: Registrar endpoints de semanas
+        this.app.register(weekRoutes);
     }
 }
