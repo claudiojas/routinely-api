@@ -1,4 +1,4 @@
-# 🚀 Routinely API v1.1.0
+# 🚀 Routinely API v1.2.0
 
 Uma API RESTful moderna desenvolvida em **TypeScript** para gerenciamento de rotinas e atividades diárias.
 
@@ -164,8 +164,25 @@ Content-Type: application/json
   "description": "Discussão sobre novos projetos",
   "type": "TRABALHO",
   "startTime": "09:00",
-  "endTime": "10:00"
+  "endTime": "10:00",
+  "date": "2024-01-15"
 }
+
+PUT /activities/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Reunião atualizada",
+  "description": "Nova descrição",
+  "type": "TRABALHO",
+  "startTime": "09:30",
+  "endTime": "10:30",
+  "date": "2024-01-15"
+}
+
+DELETE /activities/:id
+Authorization: Bearer <token>
 ```
 
 ## 🧪 Testes

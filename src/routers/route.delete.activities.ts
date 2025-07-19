@@ -10,6 +10,9 @@ export async function DeleteActivities(app: FastifyInstance) {
         const userId = request.user.id;
         const activityId = (request.params as any).id;
 
+
+        console.log(userId, activityId)
+
         try {
             const usecase = new Usecases();
             await usecase.deleteActivitie(userId, activityId);

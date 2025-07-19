@@ -2,7 +2,7 @@ import { MetodsDatabase } from "../database/repository";
 import { IActivity, ICreate, ICreateActivity, ILogin, IResponseLogin, IUser, IUpdateProfile, IChangePassword, IUserStats } from "../interfaces/interfaces";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
-import { z, ZodAny } from 'zod'
+import { z } from 'zod'
 
 export class Usecases {
 

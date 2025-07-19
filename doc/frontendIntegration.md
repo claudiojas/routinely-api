@@ -1,4 +1,4 @@
-# 🔗 Integração Frontend-Backend - Routinely API (TypeScript)
+# 🔗 Integração Frontend-Backend - Routinely API v1.2.0 (TypeScript)
 
 Este documento explica como o frontend deve integrar com a API de autenticação da aplicação Routinely usando TypeScript.
 

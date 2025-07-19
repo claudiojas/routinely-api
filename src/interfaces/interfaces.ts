@@ -14,7 +14,7 @@ export interface ILogin {
 export interface IResponseLogin {
     token: string;
     user?: IUser; // Adicionando dados do usuário no login
-}
+  }
   
 export interface IResponseCreate {
   id: string;

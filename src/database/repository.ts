@@ -114,7 +114,7 @@ export class MetodsDatabase implements IMetodsUser {
 
     // ✅ NOVO: Estatísticas do usuário
     async getUserStats(userId: string): Promise<IUserStats> {
-        const activities = await prisma.activity.findMany({
+      const activities = await prisma.activity.findMany({
             where: { userId }
         });
 
@@ -165,26 +165,26 @@ export class MetodsDatabase implements IMetodsUser {
 
     async createActivity(data: ICreateActivity, userId: string): Promise<IActivity> {
         const activity = await prisma.activity.create({
-            data: {
+        data: {
                 userId,
-                title: data.title,
-                description: data.description,
-                type: data.type,
-                startTime: data.startTime,
-                endTime: data.endTime,
+          title: data.title,
+          description: data.description,
+          type: data.type,
+          startTime: data.startTime,
+          endTime: data.endTime,
                 date: data.date,
             },
-        });
+      });
         return activity;
     }
 
     async getById(activityId: string, userId: string) {
         const activity = await prisma.activity.findFirst({
-            where: {
-                id: activityId,
-                userId,
-            },
-        });
+        where: {
+          id: activityId,
+          userId,
+        },
+      });
 
         if (!activity) {
             throw new Error('Activity not found!');
@@ -199,15 +199,15 @@ export class MetodsDatabase implements IMetodsUser {
                 id: activityId,
                 userId,
             },
-            data: {
+        data: {
                 title: data.title,
                 description: data.description,
                 type: data.type,
                 startTime: data.startTime,
                 endTime: data.endTime,
                 date: data.date,
-            },
-        });
+        },
+      });
 
         return activity;
     }
@@ -218,6 +218,6 @@ export class MetodsDatabase implements IMetodsUser {
                 id: activityId,
                 userId,
             },
-        });
+      });
     }
 }   

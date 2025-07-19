@@ -1,4 +1,4 @@
-# 🚀 Routinely API - Contexto do Projeto
+# 🚀 Routinely API v1.2.0 - Contexto do Projeto
 
 ## 📋 Visão Geral
 

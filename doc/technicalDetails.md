@@ -1,4 +1,4 @@
-# 🔧 Detalhes Técnicos - Routinely API
+# 🔧 Detalhes Técnicos - Routinely API v1.2.0
 
 Este documento contém os detalhes técnicos específicos da implementação da **Routinely API**, desenvolvida em **TypeScript** com Fastify e Prisma.
 
