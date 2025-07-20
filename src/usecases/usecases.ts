@@ -73,6 +73,10 @@ export class Usecases {
             throw new Error('User not found!');
         }
 
+        if (!user.password) {
+            throw new Error('User has no password set');
+        }
+
         const isPasswordCorrect = await bcrypt.compare(_data.data.password, user.password);
 
         if (!isPasswordCorrect) {
@@ -283,5 +287,25 @@ export class Usecases {
         };
 
         await this.repositorie.deleteActivity(activityId, userId);
+    }
+
+    async toggleActivityCompleted(userId: string, activityId: string) {
+        const toggleActivitySchema = z.object({
+            userId: z.string(),
+            activityId: z.string()
+        });
+
+        const _toggleActivity = toggleActivitySchema.safeParse({userId, activityId});
+        if(!_toggleActivity.success) { throw new Error(JSON.stringify(_toggleActivity.error.format()));}
+
+        const activity = await this.repositorie.getById(_toggleActivity.data.activityId, _toggleActivity.data.userId);
+
+        if (!activity || activity.userId !== userId) {
+            throw new Error('user or activity not found!');
+        };
+
+        const toggleActivity = await this.repositorie.toggleActivityCompleted(_toggleActivity.data.activityId, _toggleActivity.data.userId);
+
+        return toggleActivity;
     }
 } 

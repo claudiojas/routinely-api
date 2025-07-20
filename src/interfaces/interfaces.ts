@@ -20,7 +20,7 @@ export interface IResponseCreate {
   id: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -95,6 +95,7 @@ export interface IActivity {
   startTime: string;
   endTime: string;
   date: string; // formato YYYY-MM-DD
+  completed: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -106,4 +107,9 @@ export interface ICreateActivity {
   startTime: string;
   endTime: string;
   date: string; // formato YYYY-MM-DD
+}
+
+export interface IToggleActivityCompleted {
+  activityId: string;
+  userId: string;
 }

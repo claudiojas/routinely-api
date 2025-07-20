@@ -6,6 +6,7 @@ import { ActivitiesUser } from "./routers/route.activities";
 import { CreateActivities } from "./routers/route.create.activities";
 import { EditActivities } from "./routers/route.edit.activities";
 import { DeleteActivities } from "./routers/route.delete.activities";
+import { ToggleActivityCompleted } from "./routers/route.toggle.activity";
 import { UserProfile } from "./routers/route.user.profile";
 import googleAuthRoutes from "./routers/route.auth.google";
 import weekRoutes from "./routers/route.weeks";
@@ -33,7 +34,7 @@ export class App {
     register(){
         this.app.register(fastifyCors, {
             origin: "*",
-            methods: ['POST', 'DELETE', 'GET', 'PUT']
+            methods: ['POST', 'DELETE', 'GET', 'PUT', 'PATCH']
         });
 
         this.app.register(CreteUser);
@@ -42,6 +43,7 @@ export class App {
         this.app.register(CreateActivities);
         this.app.register(EditActivities);
         this.app.register(DeleteActivities);
+        this.app.register(ToggleActivityCompleted);
         // ✅ NOVO: Registrar endpoints de usuário
         this.app.register(UserProfile);
         this.app.register(googleAuthRoutes);

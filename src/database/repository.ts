@@ -13,7 +13,10 @@ export class MetodsDatabase implements IMetodsUser {
             },
         });
 
-        return user;
+        return {
+            ...user,
+            password: user.password || undefined
+        };
     }
 
     async getUserByEmail(email: string): Promise<IResponseCreate | null> {
@@ -23,7 +26,10 @@ export class MetodsDatabase implements IMetodsUser {
       
         if (!user) return null;
       
-        return user;
+        return {
+            ...user,
+            password: user.password || undefined
+        };
     }
 
     // ✅ NOVO: Buscar usuário por ID
@@ -96,6 +102,9 @@ export class MetodsDatabase implements IMetodsUser {
         }
 
         // Verificar senha atual
+        if (!user.password) {
+            throw new Error('Usuário não possui senha definida');
+        }
         const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
         
         if (!isCurrentPasswordValid) {
@@ -219,5 +228,29 @@ export class MetodsDatabase implements IMetodsUser {
                 userId,
             },
       });
+    }
+
+    async toggleActivityCompleted(activityId: string, userId: string): Promise<IActivity> {
+        const activity = await prisma.activity.findFirst({
+            where: {
+                id: activityId,
+                userId,
+            },
+        });
+
+        if (!activity) {
+            throw new Error('Activity not found!');
+        }
+
+        const updatedActivity = await prisma.activity.update({
+            where: {
+                id: activityId,
+            },
+            data: {
+                completed: !activity.completed,
+            },
+        });
+
+        return updatedActivity;
     }
 }   

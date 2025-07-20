@@ -40,6 +40,7 @@ model Activity {
   startTime   String
   endTime     String
   date        String // formato YYYY-MM-DD
+  completed   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

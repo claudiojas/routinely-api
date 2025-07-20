@@ -76,6 +76,9 @@ export class Usecases {
             throw new Error('User not found!');
         }
 
+        if (!user.password) {
+            throw new Error('User has no password set');
+        }
         const isPasswordCorrect = await bcrypt.compare(_data.data.password, user.password);
 
         if (!isPasswordCorrect) {
@@ -116,7 +119,8 @@ export class Usecases {
             description: z.string().optional(),
             type: z.enum(['PESSOAL', 'TRABALHO', 'ESTUDO', 'SAUDE', 'OUTRO']),
             startTime: z.string(),
-            endTime: z.string()
+            endTime: z.string(),
+            date: z.string()
         });
         
         const userIdSchema = z.string({ message: 'UserId not found!' });
@@ -132,7 +136,7 @@ export class Usecases {
         throw new Error(JSON.stringify(_userId.error.format()));
         }
         
-        const activities = await this.repositorie.createByActivitie(
+        const activities = await this.repositorie.createActivity(
             _activitie.data,
             _userId.data
         );
@@ -158,7 +162,7 @@ export class Usecases {
         };
 
 
-        const update = await this.repositorie.updateActivity(updateDate, _updateActivity.data.activityId,)
+        const update = await this.repositorie.updateActivity(_updateActivity.data.activityId, _updateActivity.data.userId, updateDate)
 
 
         return update;
@@ -180,8 +184,28 @@ export class Usecases {
             throw new Error('user or activity not found!');
         };
 
-        const deleteActivitie = await this.repositorie.deleteActivities(_updateActivity.data.activityId);
+        const deleteActivitie = await this.repositorie.deleteActivity(_updateActivity.data.activityId, _updateActivity.data.userId);
 
         return deleteActivitie;
+    }
+
+    async toggleActivityCompleted(userId: string, activityId: string) {
+        const toggleActivitySchema = z.object({
+            userId: z.string(),
+            activityId: z.string()
+        });
+
+        const _toggleActivity = toggleActivitySchema.safeParse({userId, activityId});
+        if(!_toggleActivity.success) { throw new Error(JSON.stringify(_toggleActivity.error.format()));}
+
+        const activity = await this.repositorie.getById(_toggleActivity.data.activityId, _toggleActivity.data.userId);
+
+        if (!activity || activity.userId !== userId) {
+            throw new Error('user or activity not found!');
+        };
+
+        const toggleActivity = await this.repositorie.toggleActivityCompleted(_toggleActivity.data.activityId, _toggleActivity.data.userId);
+
+        return toggleActivity;
     }
 }

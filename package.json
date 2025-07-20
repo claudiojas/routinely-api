@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch --env-file .env src/server.ts",
-    "build": "tsup src",
+    "build": "tsup src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
     "test": "jest",
