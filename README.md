@@ -8,6 +8,7 @@ A **Routinely API** permite:
 - Gerenciar contas de usuário (cadastro, login, perfil, preferências)
 - Criar, editar, listar, deletar e marcar atividades como concluídas
 - Organizar atividades por categorias (Pessoal, Trabalho, Estudo, Saúde, Outro)
+- Gerenciar semanas de rotina (criar, listar, editar, remover, finalizar)
 - Consultar estatísticas pessoais
 - Segurança com autenticação JWT e senhas criptografadas
 
@@ -225,6 +226,123 @@ A **Routinely API** permite:
 
 ---
 
+## Semanas (Weeks)
+
+### Listar Semanas
+`GET /weeks`
+- **Headers:** `Authorization: Bearer <token>`
+- **Resposta:**
+```json
+{
+  "data": [
+    {
+      "id": "...",
+      "userId": "...",
+      "startDate": "2024-07-21T00:00:00.000Z",
+      "endDate": "2024-07-27T23:59:59.999Z",
+      "weekNumber": 30,
+      "isActive": true,
+      "isCompleted": false,
+      "createdAt": "...",
+      "updatedAt": "...",
+      "completedAt": null
+    }
+  ]
+}
+```
+
+### Criar Semana
+`POST /weeks`
+- **Headers:** `Authorization: Bearer <token>`
+- **Body:**
+```json
+{
+  "startDate": "2024-07-21T00:00:00.000Z",
+  "endDate": "2024-07-27T23:59:59.999Z",
+  "weekNumber": 30
+}
+```
+- **Resposta:**
+```json
+{
+  "data": {
+    "id": "...",
+    "userId": "...",
+    "startDate": "2024-07-21T00:00:00.000Z",
+    "endDate": "2024-07-27T23:59:59.999Z",
+    "weekNumber": 30,
+    "isActive": true,
+    "isCompleted": false,
+    "createdAt": "...",
+    "updatedAt": "...",
+    "completedAt": null
+  }
+}
+```
+
+### Editar Semana
+`PUT /weeks/:id`
+- **Headers:** `Authorization: Bearer <token>`
+- **Body:** (qualquer campo editável)
+```json
+{
+  "startDate": "2024-07-22T00:00:00.000Z",
+  "endDate": "2024-07-28T23:59:59.999Z",
+  "weekNumber": 31,
+  "isActive": false,
+  "isCompleted": true
+}
+```
+- **Resposta:**
+```json
+{
+  "data": { ...semana atualizada... }
+}
+```
+
+### Remover Semana
+`DELETE /weeks/:id`
+- **Headers:** `Authorization: Bearer <token>`
+- **Resposta:**
+```json
+{
+  "message": "Semana removida com sucesso"
+}
+```
+
+### Finalizar Semana
+`PATCH /weeks/:id/complete`
+- **Headers:** `Authorization: Bearer <token>`
+- **Resposta:**
+```json
+{
+  "data": { ...semana finalizada... }
+}
+```
+
+### Listar Últimas Semanas Finalizadas
+`GET /weeks/completed?limit=4`
+- **Headers:** `Authorization: Bearer <token>`
+- **Resposta:**
+```json
+{
+  "data": [ ...semanas finalizadas... ]
+}
+```
+
+### Finalizar Semanas Expiradas Automaticamente
+`GET /weeks/check-expired`
+- **Headers:** `Authorization: Bearer <token>`
+- **Resposta:**
+```json
+{
+  "finalized": 2,
+  "weeks": [ ...semanas finalizadas... ]
+}
+```
+
+---
+
 ## 🧪 Testes
 
 ```bash
@@ -251,6 +369,9 @@ npm run db:studio    # Prisma Studio
 
 ### Activity
 - `id`, `userId`, `title`, `description`, `type`, `startTime`, `endTime`, `date`, `completed`, `createdAt`, `updatedAt`
+
+### Week
+- `id`, `userId`, `startDate`, `endDate`, `weekNumber`, `isActive`, `isCompleted`, `createdAt`, `updatedAt`, `completedAt`
 
 ## 🔐 Segurança
 - Senhas criptografadas (bcrypt)

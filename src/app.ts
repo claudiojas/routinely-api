@@ -9,7 +9,7 @@ import { DeleteActivities } from "./routers/route.delete.activities";
 import { ToggleActivityCompleted } from "./routers/route.toggle.activity";
 import { UserProfile } from "./routers/route.user.profile";
 import googleAuthRoutes from "./routers/route.auth.google";
-import weekRoutes from "./routers/route.weeks";
+import { weekRoutes } from "./routers/route.weeks";
 
 
 export class App {
@@ -44,10 +44,10 @@ export class App {
         this.app.register(EditActivities);
         this.app.register(DeleteActivities);
         this.app.register(ToggleActivityCompleted);
+        this.app.register(weekRoutes);
         // ✅ NOVO: Registrar endpoints de usuário
         this.app.register(UserProfile);
         this.app.register(googleAuthRoutes);
         // ✅ NOVO: Registrar endpoints de semanas
-        this.app.register(weekRoutes);
     }
 }

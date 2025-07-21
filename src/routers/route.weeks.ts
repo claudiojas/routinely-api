@@ -1,28 +1,35 @@
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../prisma/prisma.config';
 import { authenticate } from '../middlewares/middleware';
 
-export default async function weekRoutes(fastify: FastifyInstance) {
+export async function weekRoutes(app: FastifyInstance) {
   // Listar todas as semanas do usuário
-  fastify.get('/api/weeks', { preHandler: [authenticate] }, async (request: any, reply) => {
+  app.get('/weeks', { preHandler: authenticate }, async (request: any, reply) => {
     const userId = request.user.id;
     const weeks = await prisma.week.findMany({
       where: { userId },
       orderBy: { startDate: 'desc' },
     });
-    return weeks;
+    return reply.send({ data: weeks });
   });
 
   // Criar nova semana
-  fastify.post('/api/weeks', { preHandler: [authenticate] }, async (request: any, reply) => {
+  app.post('/weeks', { preHandler: authenticate }, async (request: any, reply) => {
     const userId = request.user.id;
     const bodySchema = z.object({
       startDate: z.string().datetime(),
       endDate: z.string().datetime(),
-      weekNumber: z.number().int(),
+      weekNumber: z.number().int().positive(),
     });
-    const { startDate, endDate, weekNumber } = bodySchema.parse(request.body);
+    const parse = bodySchema.safeParse(request.body);
+    if (!parse.success) {
+      return reply.status(400).send({ error: parse.error.format() });
+    }
+    const { startDate, endDate, weekNumber } = parse.data;
+    if (new Date(startDate) >= new Date(endDate)) {
+      return reply.status(400).send({ error: 'startDate deve ser menor que endDate' });
+    }
     const week = await prisma.week.create({
       data: {
         userId,
@@ -31,16 +38,57 @@ export default async function weekRoutes(fastify: FastifyInstance) {
         weekNumber,
       },
     });
-    return reply.code(201).send(week);
+    return reply.status(201).send({ data: week });
   });
 
-  // Finalizar semana
-  fastify.patch('/api/weeks/:id/complete', { preHandler: [authenticate] }, async (request: any, reply) => {
+  // Editar semana
+  app.put('/weeks/:id', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { id } = request.params;
+    const bodySchema = z.object({
+      startDate: z.string().datetime().optional(),
+      endDate: z.string().datetime().optional(),
+      weekNumber: z.number().int().positive().optional(),
+      isActive: z.boolean().optional(),
+      isCompleted: z.boolean().optional(),
+    });
+    const parse = bodySchema.safeParse(request.body);
+    if (!parse.success) {
+      return reply.status(400).send({ error: parse.error.format() });
+    }
+    const week = await prisma.week.findUnique({ where: { id } });
+    if (!week || week.userId !== userId) {
+      return reply.status(404).send({ error: 'Semana não encontrada' });
+    }
+    const updateData: any = { ...parse.data };
+    if (updateData.startDate) updateData.startDate = new Date(updateData.startDate);
+    if (updateData.endDate) updateData.endDate = new Date(updateData.endDate);
+    const updated = await prisma.week.update({
+      where: { id },
+      data: updateData,
+    });
+    return reply.send({ data: updated });
+  });
+
+  // Remover semana
+  app.delete('/weeks/:id', { preHandler: authenticate }, async (request: any, reply) => {
     const userId = request.user.id;
     const { id } = request.params;
     const week = await prisma.week.findUnique({ where: { id } });
     if (!week || week.userId !== userId) {
-      return reply.code(404).send({ error: 'Semana não encontrada' });
+      return reply.status(404).send({ error: 'Semana não encontrada' });
+    }
+    await prisma.week.delete({ where: { id } });
+    return reply.send({ message: 'Semana removida com sucesso' });
+  });
+
+  // (Opcional) Finalizar semana
+  app.patch('/weeks/:id/complete', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { id } = request.params;
+    const week = await prisma.week.findUnique({ where: { id } });
+    if (!week || week.userId !== userId) {
+      return reply.status(404).send({ error: 'Semana não encontrada' });
     }
     const updated = await prisma.week.update({
       where: { id },
@@ -50,11 +98,11 @@ export default async function weekRoutes(fastify: FastifyInstance) {
         completedAt: new Date(),
       },
     });
-    return updated;
+    return reply.send({ data: updated });
   });
 
-  // Listar últimas 4 semanas finalizadas
-  fastify.get('/api/weeks/completed', { preHandler: [authenticate] }, async (request: any, reply) => {
+  // (Opcional) Listar últimas 4 semanas finalizadas
+  app.get('/weeks/completed', { preHandler: authenticate }, async (request: any, reply) => {
     const userId = request.user.id;
     const limit = Number((request.query as any).limit) || 4;
     const weeks = await prisma.week.findMany({
@@ -62,11 +110,11 @@ export default async function weekRoutes(fastify: FastifyInstance) {
       orderBy: { completedAt: 'desc' },
       take: limit,
     });
-    return weeks;
+    return reply.send({ data: weeks });
   });
 
-  // Finalizar semanas expiradas automaticamente
-  fastify.get('/api/weeks/check-expired', { preHandler: [authenticate] }, async (request: any, reply) => {
+  // (Opcional) Finalizar semanas expiradas automaticamente
+  app.get('/weeks/check-expired', { preHandler: authenticate }, async (request: any, reply) => {
     const userId = request.user.id;
     const now = new Date();
     const expiredWeeks = await prisma.week.findMany({
@@ -84,6 +132,6 @@ export default async function weekRoutes(fastify: FastifyInstance) {
         })
       )
     );
-    return { finalized: updatedWeeks.length, weeks: updatedWeeks };
+    return reply.send({ finalized: updatedWeeks.length, weeks: updatedWeeks });
   });
 } 
