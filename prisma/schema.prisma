@@ -60,6 +60,20 @@ model Week {
   completedAt  DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayComments DayComment[]
+}
+
+model DayComment {
+  id        String   @id @default(uuid())
+  weekId    String
+  dayOfWeek Int      // 0=Domingo, 1=Segunda, ..., 6=Sábado
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  week Week @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  @@unique([weekId, dayOfWeek]) // Garante 1 comentário por dia/semana
 }
 
 enum ActivityType {

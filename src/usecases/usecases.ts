@@ -308,4 +308,25 @@ export class Usecases {
 
         return toggleActivity;
     }
+
+    async createOrUpdateDayComment(userId: string, weekId: string, dayOfWeek: number, comment: string) {
+        if (dayOfWeek < 0 || dayOfWeek > 6) throw new Error('dayOfWeek deve ser entre 0 e 6');
+        if (!comment || comment.length > 255) throw new Error('Comentário inválido');
+        return this.repositorie.createOrUpdateDayComment(weekId, userId, dayOfWeek, comment);
+    }
+
+    async getDayComments(userId: string, weekId: string) {
+        return this.repositorie.getDayComments(weekId, userId);
+    }
+
+    async updateDayComment(userId: string, weekId: string, dayOfWeek: number, comment: string) {
+        if (dayOfWeek < 0 || dayOfWeek > 6) throw new Error('dayOfWeek deve ser entre 0 e 6');
+        if (!comment || comment.length > 255) throw new Error('Comentário inválido');
+        return this.repositorie.updateDayComment(weekId, userId, dayOfWeek, comment);
+    }
+
+    async deleteDayComment(userId: string, weekId: string, dayOfWeek: number) {
+        if (dayOfWeek < 0 || dayOfWeek > 6) throw new Error('dayOfWeek deve ser entre 0 e 6');
+        return this.repositorie.deleteDayComment(weekId, userId, dayOfWeek);
+    }
 } 

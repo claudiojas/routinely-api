@@ -113,3 +113,17 @@ export interface IToggleActivityCompleted {
   activityId: string;
   userId: string;
 }
+
+export interface IDayComment {
+  id: string;
+  weekId: string;
+  dayOfWeek: number; // 0=Domingo, 1=Segunda, ..., 6=Sábado
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICreateDayComment {
+  dayOfWeek: number;
+  comment: string;
+}

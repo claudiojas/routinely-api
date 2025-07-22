@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../prisma/prisma.config';
 import { authenticate } from '../middlewares/middleware';
+import { Usecases } from '../usecases/usecases';
 
 export async function weekRoutes(app: FastifyInstance) {
   // Listar todas as semanas do usuário
@@ -133,5 +134,59 @@ export async function weekRoutes(app: FastifyInstance) {
       )
     );
     return reply.send({ finalized: updatedWeeks.length, weeks: updatedWeeks });
+  });
+
+  // Listar comentários de todos os dias da semana
+  app.get('/weeks/:weekId/comments', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { weekId } = request.params;
+    try {
+      const usecase = new Usecases();
+      const comments = await usecase.getDayComments(userId, weekId);
+      return reply.send({ data: comments });
+    } catch (error) {
+      return reply.status(400).send({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  // Criar ou sobrescrever comentário de um dia
+  app.post('/weeks/:weekId/comments', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { weekId } = request.params;
+    const { dayOfWeek, comment } = request.body;
+    try {
+      const usecase = new Usecases();
+      const result = await usecase.createOrUpdateDayComment(userId, weekId, dayOfWeek, comment);
+      return reply.status(201).send({ data: result });
+    } catch (error) {
+      return reply.status(400).send({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  // Editar comentário de um dia
+  app.put('/weeks/:weekId/comments/:dayOfWeek', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { weekId, dayOfWeek } = request.params;
+    const { comment } = request.body;
+    try {
+      const usecase = new Usecases();
+      const result = await usecase.updateDayComment(userId, weekId, Number(dayOfWeek), comment);
+      return reply.send({ data: result });
+    } catch (error) {
+      return reply.status(400).send({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  // Remover comentário de um dia
+  app.delete('/weeks/:weekId/comments/:dayOfWeek', { preHandler: authenticate }, async (request: any, reply) => {
+    const userId = request.user.id;
+    const { weekId, dayOfWeek } = request.params;
+    try {
+      const usecase = new Usecases();
+      const result = await usecase.deleteDayComment(userId, weekId, Number(dayOfWeek));
+      return reply.send(result);
+    } catch (error) {
+      return reply.status(400).send({ error: error instanceof Error ? error.message : String(error) });
+    }
   });
 } 

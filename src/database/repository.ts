@@ -253,4 +253,41 @@ export class MetodsDatabase implements IMetodsUser {
 
         return updatedActivity;
     }
+
+    // Comentários por dia da semana
+    async createOrUpdateDayComment(weekId: string, userId: string, dayOfWeek: number, comment: string) {
+        // Verifica se a semana pertence ao usuário
+        const week = await prisma.week.findUnique({ where: { id: weekId } });
+        if (!week || week.userId !== userId) throw new Error('Semana não encontrada');
+        // Upsert: cria ou atualiza
+        const dayComment = await prisma.dayComment.upsert({
+            where: { weekId_dayOfWeek: { weekId, dayOfWeek } },
+            update: { comment },
+            create: { weekId, dayOfWeek, comment },
+        });
+        return dayComment;
+    }
+
+    async getDayComments(weekId: string, userId: string) {
+        const week = await prisma.week.findUnique({ where: { id: weekId } });
+        if (!week || week.userId !== userId) throw new Error('Semana não encontrada');
+        return prisma.dayComment.findMany({ where: { weekId } });
+    }
+
+    async updateDayComment(weekId: string, userId: string, dayOfWeek: number, comment: string) {
+        const week = await prisma.week.findUnique({ where: { id: weekId } });
+        if (!week || week.userId !== userId) throw new Error('Semana não encontrada');
+        const updated = await prisma.dayComment.update({
+            where: { weekId_dayOfWeek: { weekId, dayOfWeek } },
+            data: { comment },
+        });
+        return updated;
+    }
+
+    async deleteDayComment(weekId: string, userId: string, dayOfWeek: number) {
+        const week = await prisma.week.findUnique({ where: { id: weekId } });
+        if (!week || week.userId !== userId) throw new Error('Semana não encontrada');
+        await prisma.dayComment.delete({ where: { weekId_dayOfWeek: { weekId, dayOfWeek } } });
+        return { message: 'Comentário removido com sucesso' };
+    }
 }   
