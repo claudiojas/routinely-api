@@ -51,6 +51,7 @@ export default async function googleAuthRoutes(fastify: FastifyInstance) {
       }
       // Buscar ou criar usuário no banco
       let user = await prisma.user.findUnique({ where: { email: payload.email } });
+
       if (!user) {
         user = await prisma.user.create({
           data: {

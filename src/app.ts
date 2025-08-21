@@ -10,13 +10,19 @@ import { ToggleActivityCompleted } from "./routers/route.toggle.activity";
 import { UserProfile } from "./routers/route.user.profile";
 import googleAuthRoutes from "./routers/route.auth.google";
 import { weekRoutes } from "./routers/route.weeks";
+import { ZodTypeProvider, validatorCompiler, serializerCompiler, jsonSchemaTransform } from "fastify-type-provider-zod";
+import { fastifySwagger } from '@fastify/swagger';
+import { fastifySwaggerUi } from '@fastify/swagger-ui'
+
 
 
 export class App {
     private app: FastifyInstance;
     PORT: number;
     constructor() {
-        this.app = fastify()
+        this.app = fastify({
+            logger: false
+        }).withTypeProvider<ZodTypeProvider>();
         this.PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
     }
 
@@ -35,6 +41,21 @@ export class App {
         this.app.register(fastifyCors, {
             origin: "*",
             methods: ['POST', 'DELETE', 'GET', 'PUT', 'PATCH']
+        });
+
+        this.app.setSerializerCompiler(serializerCompiler);
+        this.app.setValidatorCompiler(validatorCompiler);
+        this.app.register(fastifySwagger, {
+            openapi: {
+                info: {
+                    title: "Routinely-API",
+                    version: "1.0.0",
+                }
+            },
+            transform: jsonSchemaTransform,
+        });
+        this.app.register(fastifySwaggerUi, {
+            routePrefix: '/docs'
         });
 
         this.app.register(CreteUser);
