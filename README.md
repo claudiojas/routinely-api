@@ -17,6 +17,9 @@ A **Routinely API** permite:
 - **JWT** | **bcrypt** | **Jest** | **Docker**
 
 ---
+## Schemas
+<img width="1615" height="823" alt="supabase-schema-phhdtpfjhjsotilgdbjs" src="https://github.com/user-attachments/assets/48324af4-9241-4f29-b98b-e27edcd72398" />
+---
 
 # 📡 Endpoints da API
 
