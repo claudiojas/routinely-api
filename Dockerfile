@@ -1,31 +1,36 @@
-FROM node:lts-alpine AS base
+# Estágio de build
+FROM node:20-alpine AS builder
 
-#---------
-
-FROM base AS deps
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY package.json package-lock.json ./
 
-#---------
+RUN npm install --production
 
-FROM base AS runner
-WORKDIR /app
+COPY . .
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 api
-RUN chown api:nodejs .
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 
-COPY --chown=api:nodejs . .
-COPY --from=deps /app/node_modules ./node_modules
-
+# Execute o prisma generate APÓS copiar o código e antes do build da aplicação
 RUN npx prisma generate
 
-USER api
+RUN npm run build
 
-EXPOSE 3333
-ENV PORT=3333
-ENV HOSTNAME="0.0.0.0"
+# Estágio de produção
+FROM node:20-alpine AS production
 
-ENTRYPOINT ["npm", "run", "dev"]
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY package.json ./
+
+# Variáveis de ambiente para o Prisma
+# O Prisma precisa das variáveis de ambiente no runtime para se conectar ao banco de dados.
+# No Google Cloud, você passará essas variáveis de ambiente diretamente para o serviço de deploy (ex: Cloud Run).
+# Não inclua o arquivo .env diretamente na imagem por questões de segurança.
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]

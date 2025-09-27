@@ -15,9 +15,9 @@ export async function CreteUser(app: FastifyInstance) {
 
             return reply.status(201).send({ data: resultUseCase });
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error during event create:', error);
-            return reply.status(500).send({ error: "Error during creation!" });
+            return reply.status(500).send({ error: error.message });
         }
     })
 };

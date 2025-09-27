@@ -35,10 +35,11 @@ export class Usecases {
             throw new Error('This email is already registered!');
         }
 
-        const hashedPassword = await bcrypt.hash(data.password, 10);
+        const hashedPassword = await bcrypt.hash(_data.data.password, 10);
 
         const responseDataBase = await this.repositorie.create({
-            ..._data.data,
+            name: _data.data.name,
+            email: _data.data.email,
             password: hashedPassword
         });
 
