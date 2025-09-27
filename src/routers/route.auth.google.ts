@@ -16,12 +16,10 @@ export default async function googleAuthRoutes(fastify: FastifyInstance) {
       client_id: process.env.GOOGLE_CLIENT_ID!,
       redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
       response_type: 'code',
-      scope: [
-        'openid',
-        'email',
-        'profile',
-        'https://www.googleapis.com/auth/calendar',
-      ].join(' '),
+            scope: [
+                'https://www.googleapis.com/auth/userinfo.email',
+                'https://www.googleapis.com/auth/userinfo.profile',
+            ].join(' '),
       access_type: 'offline',
       prompt: 'consent',
     });
@@ -79,7 +77,7 @@ export default async function googleAuthRoutes(fastify: FastifyInstance) {
       // Gerar JWT da aplicação
       const appJwt = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '7d' });
       // Redirecionar para o frontend com o token (pode ser cookie seguro ou query param)
-      reply.redirect(`${process.env.GOOGLE_REDIRECT_URI_FRONTEND || 'http://localhost:5173'}/auth/callback?token=${appJwt}`);
+      reply.redirect(`${process.env.GOOGLE_REDIRECT_URI_FRONTEND || 'http://localhost:8080'}/auth/callback?token=${appJwt}`);
     } catch (err) {
       reply.status(500).send({ error: 'Erro ao autenticar com Google', details: (err as Error).message });
     }
